@@ -53,12 +53,13 @@ simulation_app = app_launcher.app
 
 """Rest everything follows."""
 
-import gymnasium as gym
 import os
+
+import gymnasium as gym
+
+# Import extensions to set up environment tasks
+import relic.tasks  # noqa: F401
 import torch
-
-from rsl_rl.runners import OnPolicyRunner
-
 from isaaclab.envs import DirectMARLEnv, multi_agent_to_single_agent
 from isaaclab.utils.dict import print_dict
 from isaaclab_rl.rsl_rl import (
@@ -68,9 +69,8 @@ from isaaclab_rl.rsl_rl import (
     export_policy_as_onnx,
 )
 from isaaclab_tasks.utils import get_checkpoint_path, parse_env_cfg
-
-# Import extensions to set up environment tasks
-import relic.tasks  # noqa: F401
+from rsl_rl.runners import OnPolicyRunner
+from tqdm import tqdm
 
 
 def main():
@@ -89,9 +89,9 @@ def main():
     if args_cli.center:
         env_cfg.viewer.origin_type = "asset_root"
         env_cfg.viewer.asset_name = "robot"
-        env_cfg.viewer.env_index = 10
+        env_cfg.viewer.env_index = 0
         env_cfg.viewer.eye = (3.0, 3.0, 3.0)
-        env_cfg.viewer.resolution = (4096, 2160)
+        env_cfg.viewer.resolution = (1920, 1080)  # (4096, 2160)
 
     # specify directory for logging experiments
     log_root_path = os.path.join("logs", "rsl_rl", agent_cfg.experiment_name)
@@ -162,8 +162,13 @@ def main():
     )
 
     # reset environment
-    obs, _ = env.get_observations()
+    obs = env.get_observations()
     timestep = 0
+    progress_bar = (
+        tqdm(total=args_cli.video_length, desc="Recording video")
+        if args_cli.video
+        else None
+    )
     # simulate environment
     while simulation_app.is_running():
         # run everything in inference mode
@@ -174,9 +179,12 @@ def main():
             obs, _, _, _ = env.step(actions)
         if args_cli.video:
             timestep += 1
+            progress_bar.update(1)
             # Exit the play loop after recording one video
             if timestep == args_cli.video_length:
                 break
+    if progress_bar is not None:
+        progress_bar.close()
 
     # close the simulator
     env.close()

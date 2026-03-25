@@ -7,10 +7,10 @@ from __future__ import annotations
 from collections.abc import Sequence
 
 import torch
-from isaaclab.utils.types import ArticulationActions
 from isaaclab.actuators.actuator_cfg import RemotizedPDActuatorCfg
 from isaaclab.actuators.actuator_pd import RemotizedPDActuator
 from isaaclab.utils import LinearInterpolation
+from isaaclab.utils.types import ArticulationActions
 from torch._tensor import Tensor
 
 
@@ -30,20 +30,22 @@ class SpotKneeActuator(RemotizedPDActuator):
         friction: Tensor | float = 0,
         effort_limit: Tensor | float = torch.inf,
         velocity_limit: Tensor | float = torch.inf,
+        **kwargs,
     ):
 
         super().__init__(
-            cfg,
-            joint_names,
-            joint_ids,
-            num_envs,
-            device,
-            stiffness,
-            damping,
-            armature,
-            friction,
-            effort_limit,
-            velocity_limit,
+            cfg=cfg,
+            joint_names=joint_names,
+            joint_ids=joint_ids,
+            num_envs=num_envs,
+            device=device,
+            stiffness=stiffness,
+            damping=damping,
+            armature=armature,
+            friction=friction,
+            effort_limit=effort_limit,
+            velocity_limit=velocity_limit,
+            **kwargs,
         )
 
         self._pos_torque_speed_data = torch.tensor(
