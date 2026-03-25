@@ -28,35 +28,23 @@ NEWS: Discover how ReLIC enables autonomous, dynamic whole-body manipulation thr
 </p>
 
 ## Install
-This project uses [Pixi](https://pixi.sh/latest/installation/) to manage dependencies and ensure a consistent development environment. You won't need to use `conda` or `virtualenv` separately or manually install `IsaacSim` or `IsaacLab`. Just follow the steps below to get started.
+To install this project, you can use the `uv` package manager.
 
-1. **Install Pixi**
+1. **Install UV**
     ```bash
-    curl -fsSL https://pixi.sh/install.sh | sh
-    ```
-
-2. **Clone the repository**
-    ```bash
-    git clone https://github.com/bdaiinstitute/relic.git && cd relic
+    curl -LsSf https://astral.sh/uv/install.sh | sh
     ```
 
 3. **Install dependencies**
     ```bash
-    pixi install
+    uv sync
     ```
-
-4. **Activate the environment**
-    ```bash
-    pixi shell
-    ```
-
-Alternatively, you can install the project without Pixi by following the standard installation guides for [IsaacLab](https://isaac-sim.github.io/IsaacLab/v2.1.0/source/setup/installation/isaaclab_pip_installation.html) and its [extensions](https://github.com/isaac-sim/IsaacLabExtensionTemplate/tree/main?tab=readme-ov-file#installation).
 
 ## Train and Play
 
 ```bash
-python scripts/rsl_rl/train.py --task Isaac-Spot-Interlimb-Phase-1-v0 --headless
-python scripts/rsl_rl/play.py --task Isaac-Spot-Interlimb-Play-v0 --center
+uv run scripts/rsl_rl/train.py --task Isaac-Spot-Interlimb-Phase-1-v0 --headless
+uv run scripts/rsl_rl/play.py --task Isaac-Spot-Interlimb-Play-v0 --center
 ```
 
 To achieve optimal deployment results, we implemented a weight curriculum with multiple training phases. Users can fine-tune the models from `Phase-2` to `Phase-4` to reproduce the results presented in our paper. The pre-trained weights can be found in `relic/source/relic/relic/assets/spot/pretrained`.
